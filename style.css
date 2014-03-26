@@ -1,0 +1,187 @@
+@charset "UTF-8";
+/*
+Theme Name: ATFGC
+Description: Theme developed by Cuyahoga Community College Advanced Web Students.
+Author: VCIM @ TRI-C
+AuthorURI: http://www.tri-c.edu/visualcommunications
+*/
+
+body  {
+	font:"Palatino Linotype", "Book Antiqua", Palatino, serif;
+	font-size:12px;
+        line-height:135%;
+	background: url(images/bg5.jpg) repeat #FFF fixed;
+	text-align: center; 
+	/* this centers the container in IE 5* browsers. The text is then set to the left aligned default in the #container selector */
+	color: #000000;
+	height:100%;
+	margin:0;
+	padding:0;
+}
+h1, h2, h3, h4 {
+	font-family:"Palatino Linotype", "Book Antiqua", Palatino, serif;
+}
+
+h3 a {
+	text-decoration:underline;
+        color:#306;
+		weight:500;
+}
+p {
+	margin: 10px 0;
+
+}
+h1 {
+	font-size:1.6em;
+	text-align:left;
+	padding:21px 0 5px 20px;
+}
+h2 {
+	font-weight:300;
+	margin:	15px 0;
+	font-size:1.4em;
+}
+h3 {
+	margin:15px 0 5px;
+	font-size:1.2em;
+}
+
+h4 {color:#306;
+font-style:italic;
+	margin:15px 0 5px;
+	font-size:1.1em;
+}
+
+hr{height:hairline;width:100%;color:#CCC;border:1px solid #DDD;}
+
+#container {
+	height:100%;
+	width: 960px;
+	background: #FFFFFF;
+	margin: 0px auto 20px auto;
+	text-align: left;
+	display:inline-block;
+	/*DROP SHADOW FOR MULTIPLE BROWSERS*/
+	-moz-box-shadow: 0px 0px 6px #666;
+	-webkit-box-shadow: 0px 0px 6px #666;
+	box-shadow: 0px 0px 6px #666;
+	zoom:1; /* This enables hasLayout, which is required for older IE browsers */
+	filter: progid:DXImageTransform.Microsoft.Shadow(color='#666666', Direction=125, Strength=4);
+/* this overrides the text-align: center on the body element. */
+}
+#content{/* This contains the three columns*/
+	background: url(images/bgContent.gif) repeat-y;
+	border-bottom:1px solid #666;
+	}
+
+#content ul li{
+	list-style:circle; list-style-position:inside; margin-left:7px;
+	}
+
+#content ul li a{
+	decoration:underline; color:#2a5700;;
+	}
+
+#content ul li ul li{
+	list-style:none; list-style-position:inside; margin-left:21px;
+	}
+
+#content ul li ul li a{
+	decoration:underline; color:#5a8707;
+	}
+
+#mainContent {
+	width:445px;
+	float:left;
+	margin-left:211px;
+	padding: 15px;
+	border: 0px solid #0F0;
+	margin:0px;
+}
+
+#rightcolumn {
+	width:210px;
+	height:100%;
+	float:left;
+	padding: 15px;
+}
+#leftcolumn {
+float:left;
+	height:100%;
+	width: 210px;
+	padding: 15px;
+}
+
+#leftcolumn h2 {
+color:#306; font-size:1.4em; text-align:center;
+}
+#rightcolumn h2 {
+color:#306; font-size:1em;
+}
+
+#donate{
+	width:169px;
+	height:36px;
+	background:url("images/donate_button.png") ;
+	margin-left:19px;
+}
+
+.floatright { /* this class can be used to float an element right in your page. The floated element must precede the element it should be next to on the page. */
+	float: right;
+	margin-left: 8px;
+}
+.floatleft { /* this class can be used to float an element left in your page */
+	float: left;
+	margin-right: 8px;
+}
+.clearfloat { /* this class should be placed on a div or break element and should be the final element before the close of a container that should fully contain a float */
+	clear:both;
+    height:0;
+    font-size: 1px;
+    line-height: 0px;
+}
+a, a:link, a:active, a:visited {
+	text-decoration:none;
+        color:#5a8707;
+}
+a:hover {
+	text-decoration:underline;
+        color:#6c468f;
+}
+.staff_title{
+	font-size:1em;
+	margin-bottom:0;
+	color:#606;
+}
+.staff_name{
+	font-size:1.1em; margin-left:12px; margin-top:0px;
+}
+li.staff_name {font-size:1.1em; color:#000; margin-top:0px; list-style:circle; list-style-position:inside; margin-left:12px;}
+
+
+.board_title{
+	font-size:1em;
+	margin-bottom:0;
+	color:#606;
+}
+.board_member{
+	font-size:1.1em; margin-top:-2px;
+}
+
+ul.board_title {font-size:1em; color:#606; list-style:disc;}
+li.board_member {font-size:1.1em; color:#000; margin-top:0px; list-style:circle; list-style-position:inside; margin-left:12px;}
+
+.pic_float_left{
+	float:left;
+	margin:0 25px 25px 0;
+
+}
+.pic_float_right{
+	float:right;
+	margin:0 10px 25px 25px;
+
+}
+
+form #searchform input #s {
+background: #ffffff; color:#006600; border:3px inset #006600;
+}

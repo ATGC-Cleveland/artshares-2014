@@ -1,0 +1,55 @@
+@charset "UTF-8";
+/* Header*/
+#header {
+	/*background: url('wp-content/themes/themeBare/images/bg_header_gradient.jpg') repeat-x;*/
+background: url(images/bg_header_gradient.jpg) repeat-x;
+	height:276px;
+	color:#fff;
+	margin:0 0;
+	line-height:1.2em;
+	width:960px;
+}
+#mainPics {
+	display:inline-block;
+	padding-top:0px;
+	height:160px;
+	width:960px;
+}
+#mainPics img {
+	margin: -2px;
+	padding: 0;
+}
+.description {
+	text-align:left;
+	padding:0 0 5px 20px;
+	font:"Palatino Linotype", "Book Antiqua", Palatino, serif;
+
+}
+
+#image_1{
+	width:240px;
+	height:160px;
+	float:left;
+	background:url(images/twoGuys_frontpage.jpg) no-repeat;
+}
+
+#image_2{
+	width:240px;
+	height:160px;
+	float:left;
+	background:url(images/pregnantLady_frontpage.jpg) no-repeat;
+}
+
+#image_3{
+	width:240px;
+	height:160px;
+	float:left;
+	background:url(images/fatherAndSon_frontpage.jpg) no-repeat;
+}
+
+#image_4{
+	width:240px;
+	height:160px;
+	float:left;
+	background:url(images/threeGirlsBacks_frontpage.jpg) no-repeat;
+}

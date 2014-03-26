@@ -1,0 +1,156 @@
+#wrap2 {
+background:url("/wp-content/themes/themeBare/images/nav_bkgrd.jpg") repeat-x 0px 0px #6c468f;
+height:55px;
+width:725px; 
+margin:-2px 0px 0px 0px;
+border:1px solid #000;
+border-bottom:0;
+float:right;
+
+}
+
+a.megawhite{
+color:#ffffff;
+text-decoration:none;
+}
+
+html #wrap { 
+height:100%; 
+}
+/* ---------- Mega Drop Down --------- */
+#mega {
+
+list-style:none;
+font-weight:bold;
+height:2em;
+padding:0px;
+margin:0px 0px 0px 0px;
+float:left;
+
+
+}
+#mega li {
+
+background:url("/wp-content/themes/themeBare/images/nav_bkgrd.jpg") repeat-x 0px 0px #6c468f;
+border-left:1px solid #403b44;
+border-right:1px solid #403b44;
+margin-left:-1px;
+float:left;
+height:39px;
+padding:8px;
+text-align:center;
+position:relative;
+text-decoration:none;
+
+}
+#mega li:hover {
+text-decoration:none;
+background:#666;
+border-bottom:0; /* border-bottom:0; and padding-bottom:1px; keeps <li> and <div> connected */
+padding:7px 0 1px 0;
+margin-top:0px;
+height:39px;
+padding:8px;
+z-index:1; /* shadow above adjacent li */
+}
+#mega p a {
+color:#666;
+outline:0;
+text-decoration:none;
+display:block;
+line-height:2em;
+}
+/* ----------- Hide/Show Div ---------- */
+#mega div {
+position:absolute;
+left:-999em;
+margin-top:1px;
+width:auto;
+height:auto;
+padding-bottom:5px;
+border:1px solid #403b44;
+border-top:0;
+font-weight:normal;
+text-align:left;
+background:#fff;
+}
+#mega li:hover div {
+left:-1px;top:22px;
+}
+#mega li.dif:hover div {
+left:-221px;
+}
+/* --------- Within Div Styles --------- */
+#mega div h2 {
+background:#95c53b;
+font-size:1em;
+padding:0 10px;
+margin:10px 0 0 0;
+clear:both;
+float:left;
+width:200px;
+position:relative; /* makes above drop shadow */
+}
+#mega div p{
+float:left;
+width:150px;
+padding-left:10px;
+position:relative; /* makes above drop shadow */
+}
+#mega div p a {
+text-decoration:underline;
+/*clear:left;
+float:left;*/
+width:100%; /* For IE6/7 */
+line-height:1.4;
+}
+#mega div a:hover, #mega div a:focus, #mega div a:active {
+background-color:#95c53b;
+color:#333;
+}
+/* ---------- Drop Shadow ---------- */
+#mega div .s1, #mega div .s2, #mega div .s3 {
+position:absolute;
+width:100%;height:100%;
+}
+#mega div .s1 {
+background:url(images/rightcorner.png) 100% 0 no-repeat;
+top:1px;right:-9px;
+
+} 
+#mega div .s2 {
+background:url(images/leftcorner.png) 0 100% no-repeat;
+bottom:-9px;left:1px;
+} 
+#mega div .s3 {
+background:url(images/shadow.png) 100% 100%;
+top:9px;right:-9px;
+}
+#mega li:hover .s4 {
+background:url(images/li-shadow.png) 100% 0 repeat-y;
+position:absolute;
+top:0;right:-9px;
+height:100%;
+padding:0 8px 0 0;
+}
+* html #mega li:hover .s4 {
+background:none;
+}
+#mega li:hover .dif-s4 {
+padding-bottom:9px
+}
+
+#logo {
+background:url(images/logo.jpg);
+background-repeat:no-repeat;
+background-position:0% 0%;
+position:relative;
+height:87px;
+width:233px;
+float:left;
+display:inline-block;
+}
+
+<!--[if IE 6]>
+body{behavior:url("csshover.htc");}
+<!--[endif]-->
