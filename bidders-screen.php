@@ -1,10 +1,10 @@
 <?php
-/*
-Template Name: PageOfPosts
-*/
+/**
+ * Template Name: Event Cover
+ *
+ * @package WordPress
+ * @subpackage ArtCares2014
+ * @since ArtCares2014 0.0.1
+ */
 
-get_header(); ?>
-<?php include (TEMPLATEPATH . '/sidebar_left.php'); ?>
-<?php include (TEMPLATEPATH . '/main.php'); ?>
-<?php include (TEMPLATEPATH . '/sidebar_right.php'); ?>
-<?php get_footer(); ?>
+?>
