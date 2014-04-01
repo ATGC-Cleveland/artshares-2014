@@ -26,11 +26,11 @@
     <meta name="Revisit-after" content="1 Day">
     <meta name="expires" content="never">
 
-<link rel="stylesheet" href="/wp-content/themes/themeBare/reset.css" type="text/css" media="screen" />
-<link rel="stylesheet" href="/wp-content/themes/themeBare/style.css" type="text/css" media="screen" />
-<link rel="stylesheet" href="/wp-content/themes/themeBare/header.css" type="text/css" media="screen" />
-<link rel="stylesheet" href="/wp-content/themes/themeBare/nav.css" type="text/css" media="screen" />
-<!--<link rel="stylesheet" href="/wp-content/themes/themeBare/footer.css" type="text/css" media="screen" />-->
+<link rel="stylesheet" href="/wp-content/themes/artshares-2014/reset.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/wp-content/themes/artshares-2014/style.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/wp-content/themes/artshares-2014/header.css" type="text/css" media="screen" />
+<link rel="stylesheet" href="/wp-content/themes/artshares-2014/nav.css" type="text/css" media="screen" />
+<!--<link rel="stylesheet" href="/wp-content/themes/artshares-2014/footer.css" type="text/css" media="screen" />-->
 <link rel="stylesheet" href="<?php echo get_stylesheet_directory_uri(); echo '/footer.css?v=' . filemtime( get_stylesheet_directory() . '/footer.css'); ?>" type="text/css" media="screen" />
 <link rel="alternate" type="application/rss+xml" title="RSS 2.0" href="<?php if ( get_option('unnamed_rss') != '') { echo (get_option('unnamed_rss')); } else { echo bloginfo('rss2_url'); } ?>" />
 <link rel="alternate" type="text/xml" title="RSS .92" href="<?php bloginfo('rss_url'); ?>" />
@@ -45,8 +45,8 @@
 <?php } } ?>
 <?php if( get_option('unnamed_shelf')==1 ) { wp_enqueue_script('unnamed_toggle'); } ?>
 <?php wp_head(); ?>
-<link type="image/x-icon" href="../../../../wp-content/themes/themeBare/images/favicon.ico" />
-<link type="image/x-icon" rel="shortcut icon" href="../../../../wp-content/themes/themeBare/images/favicon.ico" /> 
+<link type="image/x-icon" href="../../../../wp-content/themes/artshares-2014/images/favicon.ico" />
+<link type="image/x-icon" rel="shortcut icon" href="../../../../wp-content/themes/artshares-2014/images/favicon.ico" /> 
 </head>
 <body>
 <div id="container">
