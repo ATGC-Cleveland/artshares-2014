@@ -9,6 +9,8 @@
 
 //var_dump( $_POST );
 
+$regs = new ATGC_Registration();
+
 ?>
 
 <div>
@@ -127,54 +129,254 @@
 					
 					<?php endif; ?>
 				
-				<?php elseif ( $_GET['type'] == 'purchaser' ): ?>
+				<?php elseif ( $_GET['type'] == 'sponsor' ): ?>
 				
-					<h3>Search by Purchaser</h3>
-				
-					<form action="<?php echo add_query_arg( array( 'action' => 'search' , 'type' => 'purchaser' ), get_permalink() ); ?>" method="post">
-						<fieldset>
-							<label for="first_name">First Name</label>
-							<input type="text" id="first_name" name="first_name" class="form-text" />
-						</fieldset>
-						
-						<fieldset>
-							<label for="last_name">Last Name</label>
-							<input type="text" id="last_name" name="last_name" class="form-text" />
-						</fieldset>
-						
-						<fieldset>
-							<label for="email">Email</label>
-							<input type="email" id="email" name="email" class="form-text" />
-						</fieldset>
-						
-						<fieldset>
-							<label for="affiliation">Affiliation</label>
-							<input type="affiliation" id="affiliation" name="affiliation" class="form-text" />
-						</fieldset>
+					<h3>Search by Sponsor</h3>
 					
-						<fieldset class="form-actions">
-							<input type="submit" value="Search" />
-						</fieldset>
-					</form>
+					<?php if ( !empty( $_POST ) ): ?>
+					
+						<h2>Sponsors List</h2>
+						
+						<?php //var_dump( $_POST ); ?>
+						
+						<?php $sponsors = $regs->search_sponsors( $_POST ); ?>
+						
+						<?php //var_dump( $sponsors ); ?>
+						
+						<?php if ( !empty( $sponsors ) ): ?>
+						
+							<ul>
+									
+								<?php foreach ( $sponsors as $sponsor_id => $sponsor ): ?>
+								
+									<?php // need to develop a way to alphabetize this list ?>
+								
+									<li><a href="<?php echo add_query_arg( array( 'action' => 'view' , 'guest_id' => $sponsor['id'] , 'sponsor_id' => $sponsor_id ) , get_permalink( get_page_by_path( 'artcares/twentyfourteen/registration/sponsor' ) ) ); ?>"><?php echo $sponsor['first_name'] . " " . $sponsor['last_name'] . ' (' . $sponsor['guests'] . ')' ?></a></li>
+								
+								<?php endforeach; ?>
+							
+							</ul>
+						
+						<?php else: ?>
+						
+							<p>No sponsors with any available tickets could be found based on the information you entered.</p>
+							
+						<?php endif; ?>
+					
+					<?php else: ?>
+					
+						<form action="<?php echo add_query_arg( array( 'action' => 'search' , 'type' => 'sponsor' ), get_permalink() ); ?>" method="post">
+							<fieldset>
+								<label for="first_name">First Name</label>
+								<input type="text" id="first_name" name="guest_name[first]" class="form-text" />
+							</fieldset>
+							
+							<fieldset>
+								<label for="last_name">Last Name</label>
+								<input type="text" id="last_name" name="guest_name[last]" class="form-text" />
+							</fieldset>
+							
+							<fieldset>
+								<label for="email">Email</label>
+								<input type="email" id="email" name="email" class="form-text" />
+							</fieldset>
+							
+							<fieldset class="form-actions">
+								<button type="submit" name="search_by" value="guest">Search by Guest</button>
+							</fieldset>
+						</form>
+						
+						<form action="<?php echo add_query_arg( array( 'action' => 'search' , 'type' => 'sponsor' ), get_permalink() ); ?>" method="post">
+							<fieldset>
+								<label for="affiliation">Affiliation</label>
+								<?php $affiliates = $regs->get_affiliates(); ?>
+								
+								<select id="affiliation" name="sponsor_id" class="form-text">
+								
+									<option value=""></option>
+									
+									<?php foreach ( $affiliates as $affiliate ): ?>
+									
+										<option value="<?php echo $affiliate->data->{'24898126'}->value; ?>"><?php echo $affiliate->data->{'24898013'}->value; ?></option>
+									<?php endforeach; ?>
+								</select>
+							</fieldset>
+						
+							<fieldset class="form-actions">
+								<button type="submit" name="search_by" value="affiliation">Search by Affiliation</button>
+							</fieldset>
+						</form>
+					
+					<?php endif; ?>
 				
 				<?php endif; ?>
 				
 			<?php endif; ?>
 			
-				<p><a href="<?php echo get_permalink(); ?>">Back to Main</a></p>
+				<ul>
+					<li><a href="<?php echo get_permalink( get_page_by_path( 'artcares/twentyfourteen/registration' ) ); ?>">Return to Registration Menu</a></li>
+					<li><a href="<?php echo get_permalink( get_page_by_path( 'artcares/twentyfourteen/dashboard' ) ); ?>">Return to Main Menu</a></li>
+				</ul>
 		
 		<?php elseif ( $_GET['action'] == 'register' ): ?>
 		
 			<h2>Register New Guest</h2>
 			
-			<p><a href="<?php echo get_permalink(); ?>">Back to Main</a></p>
+			<?php if ( empty( $_POST ) ): ?>
+			
+				<form action="<?php echo add_query_arg( array( 'action' => 'register' ), get_permalink() ); ?>" method="post">
+					<fieldset>
+						<legend>Guest Name</legend>
+						<fieldset>
+							<label for="first_name">First Name</label>
+							<input type="text" id="first_name" name="field_<?php echo $regs->get_form_field_id( 'guest_name' ); ?>[first]" class="form-text" />
+						</fieldset>
+						
+						<fieldset>
+							<label for="last_name">Last Name</label>
+							<input type="text" id="last_name" name="field_<?php echo $regs->get_form_field_id( 'guest_name' ); ?>[last]" class="form-text" />
+						</fieldset>
+					</fieldset>
+					
+					<fieldset>	
+						<legend>Date of Birth</legend>
+						
+						<fieldset>
+							<label for="month">Month</label>
+							<select id="month" name="field_<?php echo $regs->get_form_field_id( 'dob' ); ?>[month]" class="form-text">
+								<option value=""></option>
+								<?php
+									$months = range( 1 , 12 );
+									
+									foreach ( $months as $month ) {
+										echo '<option value="' . $month . '">(' . str_pad( $month , 2 , '0' , STR_PAD_LEFT ) . ') ' . date( 'F' , mktime( 0 , 0 , 0 , $month ) ) . '</option>';
+									}
+								?>
+							</select>
+						</fieldset>
+						
+						<fieldset>
+							<label for="day">Day</label>
+							<select id="day" name="field_<?php echo $regs->get_form_field_id( 'dob' ); ?>[day]" class="form-text">
+								<option value=""></option>
+								<?php
+									$days = range( 1 , 31 );
+									
+									foreach ( $days as $day ) {
+										echo '<option value="' . $day . '">' . $day . '</option>';
+									}
+								?>
+							</select>
+						</fieldset>
+						
+						<fieldset>
+							<label for="year">Year</label>
+							<select id="year" name="field_<?php echo $regs->get_form_field_id( 'dob' ); ?>[year]" class="form-text">
+								<option value=""></option>
+								<?php
+									$years = range( 2014-18 , 2014-90 );
+									
+									foreach ( $years as $year ) {
+										echo '<option value="' . $year . '">' . $year . '</option>';
+									}
+								?>
+							</select>
+						</fieldset>
+					</fieldset>
+					
+					<fieldset>	
+						<label for="gender">Gender</label>
+						<select id="gender" name="field_<?php echo $regs->get_form_field_id( 'gender' ); ?>" class="form-text">
+							<option value=""></option>
+							<option value="1">Male</option>
+							<option value="2">Female</option>
+							<option value="3">Transgender</option>
+						</select>
+					</fieldset>
+					
+					<fieldset>	
+						<label for="guest_type">Guest Type</label>
+						<select id="guest_type" name="field_<?php echo $regs->get_form_field_id( 'guest_type' ); ?>" class="form-text">
+							<option value=""></option>
+							<option value="1">Pre-Registered</option>
+							<option value="2">Walk-In</option>
+							<option value="3">Young Professional</option>
+							<option value="4">Complimentary</option>
+						</select>
+					</fieldset>
+					
+					<fieldset>
+						<label for="email">Email</label>
+						<input type="email" id="email" name="field_<?php echo $regs->get_form_field_id( 'email' ); ?>" class="form-text" value="" />
+					</fieldset>
+					
+					<fieldset>
+						<legend>Sponsorship</legend>
+						
+						<label for="sponsor_type">Sponsor Type</label>
+						<select id="sponsor_type" name="field_<?php echo $regs->get_form_field_id( 'sponsor_type' ); ?>" class="form-text">
+							<option value=""></option>
+							<option value="1">Guest</option>
+							<option value="2">Affiliation</option>
+						</select>
+						
+						<label for="sponsor">Sponsor</label>
+						<input type="text" id="sponsor" name="field_<?php echo $regs->get_form_field_id( 'sponsor' ); ?>" class="form-text" value="" />
+					</fieldset>
+					
+					<fieldset>
+						<label for="status">Status</label>
+						<select id="status" name="field_<?php echo $regs->get_form_field_id( 'status' ); ?>" class="form-text">
+							<option value=""></option>
+							<option value="0">Unclaimed</option>
+							<option value="1">Claimed</option>
+						</select>
+					</fieldset>
+				
+					<fieldset class="form-actions">
+						<button type="submit" name="form_action" value="register">Register Guest</button>
+						<button type="submit" name="form_action" value="checkin">Checkin Guest</button>
+						<button type="submit" name="form_action" value="cancel">Cancel</button>
+					</fieldset>
+				</form>
+			
+			<?php else: ?>
+			
+				<?php //var_dump( $_POST ); ?>
+				
+				<?php $register_response = $regs->register_guest( $_POST ); ?>
+				
+				<?php if ( array_key_exists( 'status' , $register_response ) ): ?>
+				
+					<?php if ( $register_response['status'] ): ?>
+					
+						<p><?php echo $register_response['message']; ?></p>
+					
+					<?php endif; ?>
+					
+					<?php if ( $register_response['action'] == 'checkin' ): ?>
+					
+						<p>The guest's bidder number is:</p>
+						
+						<p><?php echo $register_response['guest_id']; ?></p>
+					
+					<?php endif; ?>
+				
+				<?php endif; ?>
+			
+			<?php endif; ?>
+			
+			<ul>
+				<li><a href="<?php echo get_permalink( get_page_by_path( 'artcares/twentyfourteen/registration' ) ); ?>">Return to Registration Menu</a></li>
+				<li><a href="<?php echo get_permalink( get_page_by_path( 'artcares/twentyfourteen/dashboard' ) ); ?>">Return to Main Menu</a></li>
+			</ul>
 		
 		<?php else: ?>
 		
 			<div>
 				<ul>
 					<li><a href="<?php echo add_query_arg( array( 'action' => 'search' , 'type' => 'guest' ), get_permalink() ); ?>">Search by Guest Name</a></li>
-					<li><a href="<?php echo add_query_arg( array( 'action' => 'search' , 'type' => 'purchaser' ), get_permalink() ); ?>">Search by Purchaser</a></li>
+					<li><a href="<?php echo add_query_arg( array( 'action' => 'search' , 'type' => 'sponsor' ), get_permalink() ); ?>">Search by Sponsor</a></li>
 					<li><a href="<?php echo add_query_arg( array( 'action' => 'register' ), get_permalink() ); ?>">Register New Guest</a></li>
 				</ul>
 			</div>
@@ -188,7 +390,7 @@
 		<div>
 			<ul>
 				<li><a href="<?php echo add_query_arg( array( 'action' => 'search' , 'type' => 'guest' ), get_permalink() ); ?>">Search by Guest Name</a></li>
-				<li><a href="<?php echo add_query_arg( array( 'action' => 'search' , 'type' => 'purchaser' ), get_permalink() ); ?>">Search by Purchaser</a></li>
+				<li><a href="<?php echo add_query_arg( array( 'action' => 'search' , 'type' => 'sponsor' ), get_permalink() ); ?>">Search by Sponsor</a></li>
 				<li><a href="<?php echo add_query_arg( array( 'action' => 'register' ), get_permalink() ); ?>">Register New Guest</a></li>
 			</ul>
 		</div>
