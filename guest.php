@@ -17,7 +17,9 @@
 
 		<h1>View Guest Profile</h1>
 		
-		<?php $profile = $regs->get_guest( $_GET['guest_id'] ); ?>
+		<?php $profile = $regs->get_guest( $_GET['registration_id'] ); ?>
+		
+		<?php //var_dump( $profile ); ?>
 		
 		<h2><?php echo $profile['guest_name']['value']; ?></h2>
 		<h3>Guest ID: #<?php echo $profile['guest_id']['value']; ?></h3>
@@ -41,6 +43,10 @@
 				
 					<dd><?php echo $regs->convert_sponsor_type( $data['value'] ) ?></dd>
 				
+				<?php elseif ( $field == 'sponsor' ): ?>
+				
+					<dd><?php echo $regs->get_sponsor( $data['value'] , $regs->convert_sponsor_type( $profile['sponsor_type']['value'] , 'integer' ) ) ?></dd>
+				
 				<?php elseif ( $field == 'gender' ): ?>
 				
 					<dd><?php echo $regs->convert_gender( $data['value'] ) ?></dd>
@@ -62,14 +68,13 @@
 	
 	<?php elseif ( $_GET['action'] == 'edit' ): ?>
 	
-		<?php
-			// allocate form values
+		<?php if ( empty( $_POST ) ): ?>
 			
-			//var_dump( $_POST );
-			
-			if ( empty( $_POST ) ) {
+			<?php if ( isset( $_GET['registration_id'] ) || array_key_exists( 'registration_id' , $_GET ) ): ?>
 				
-				$profile = $regs->get_guest( $_GET['guest_id'] );
+				<?php
+				
+				$profile = $regs->get_guest( $_GET['registration_id'] );
 			
 				/**
 				 * Name Parser
@@ -115,126 +120,134 @@
 				);
 				
 				//var_dump($guest_profile);
-			}
-		?>
+				
+				?>
 	
-		<h1>Edit Guest Profile</h1>
+			<h1>Edit Guest Profile</h1>
+			
+			<form action="<?php echo add_query_arg( array( 'action' => 'update' , 'registration_id' => $_GET['registration_id'] ), get_permalink() ); ?>" method="post">
+				<fieldset>
+					<legend>Guest Name</legend>
+					<fieldset>
+						<label for="first_name">First Name</label>
+						<input type="text" id="first_name" name="field_<?php echo $profile['guest_name']['id']; ?>[first]" class="form-text" value="<?php echo $guest_profile['name']['first'] ?>" />
+					</fieldset>
+					
+					<fieldset>
+						<label for="last_name">Last Name</label>
+						<input type="text" id="last_name" name="field_<?php echo $profile['guest_name']['id']; ?>[last]" class="form-text" value="<?php echo $guest_profile['name']['last'] ?>" />
+					</fieldset>
+				</fieldset>
+				
+				<fieldset>	
+					<legend>Date of Birth</legend>
+					
+					<fieldset>
+						<label for="month">Month</label>
+						<select id="month" name="field_<?php echo $profile['dob']['id']; ?>[month]" class="form-text">
+							<option value="" <?php selected( $guest_profile['dob']['month'] == '' ); ?>></option>
+							<?php
+								$months = range( 1 , 12 );
+								
+								foreach ( $months as $month ) {
+									echo '<option value="' . $month . '"' . selected( $guest_profile['dob']['month'] == $month ) . '>(' . str_pad( $month , 2 , '0' , STR_PAD_LEFT ) . ') ' . date( 'F' , mktime( 0 , 0 , 0 , $month ) ) . '</option>';
+								}
+							?>
+						</select>
+					</fieldset>
+					
+					<fieldset>
+						<label for="day">Day</label>
+						<select id="day" name="field_<?php echo $profile['dob']['id']; ?>[day]" class="form-text">
+							<option value="" <?php selected( $guest_profile['dob']['day'] == '' ); ?>></option>
+							<?php
+								$days = range( 1 , 31 );
+								
+								foreach ( $days as $day ) {
+									echo '<option value="' . $day . '"' . selected( $guest_profile['dob']['day'] == $day ) . '>' . $day . '</option>';
+								}
+							?>
+						</select>
+					</fieldset>
+					
+					<fieldset>
+						<label for="year">Year</label>
+						<select id="year" name="field_<?php echo $profile['dob']['id']; ?>[year]" class="form-text">
+							<option value="" <?php selected( $guest_profile['dob']['year'] == '' ); ?>></option>
+							<?php
+								$years = range( 2014-18 , 2014-90 );
+								
+								foreach ( $years as $year ) {
+									echo '<option value="' . $year . '"' . selected( $guest_profile['dob']['year'] == $year ) . '>' . $year . '</option>';
+								}
+							?>
+						</select>
+					</fieldset>
+				</fieldset>
+				
+				<fieldset>	
+					<label for="gender">Gender</label>
+					<select id="gender" name="field_<?php echo $profile['gender']['id']; ?>" class="form-text">
+						<option value="" <?php selected( $guest_profile['gender'] == '' ); ?>></option>
+						<option value="1" <?php selected( $guest_profile['gender'] == '1' ); ?>>Male</option>
+						<option value="2" <?php selected( $guest_profile['gender'] == '2' ); ?>>Female</option>
+						<option value="3" <?php selected( $guest_profile['gender'] == '3' ); ?>>Transgender</option>
+					</select>
+				</fieldset>
+				
+				<fieldset>	
+					<label for="guest_type">Guest Type</label>
+					<select id="guest_type" name="field_<?php echo $profile['guest_type']['id']; ?>" class="form-text">
+						<option value="" <?php selected( $guest_profile['guest_type'] == '' ); ?>></option>
+						<option value="1" <?php selected( $guest_profile['guest_type'] == '1' ); ?>>Pre-Registered</option>
+						<option value="2" <?php selected( $guest_profile['guest_type'] == '2' ); ?>>Walk-In</option>
+						<option value="3" <?php selected( $guest_profile['guest_type'] == '3' ); ?>>Young Professional</option>
+						<option value="4" <?php selected( $guest_profile['guest_type'] == '4' ); ?>>Complimentary</option>
+					</select>
+				</fieldset>
+				
+				<fieldset>
+					<label for="email">Email</label>
+					<input type="email" id="email" name="field_<?php echo $profile['email']['id']; ?>" class="form-text" value="<?php echo $guest_profile['email'] == 'No information available.' ? '' : $guest_profile['email'] ?>" />
+				</fieldset>
+				
+				<fieldset>
+					<legend>Sponsorship</legend>
+					
+					<label for="sponsor_type">Sponsor Type</label>
+					<select id="sponsor_type" name="field_<?php echo $profile['sponsor_type']['id']; ?>" class="form-text">
+						<option value="" <?php selected( $guest_profile['sponsor_type'] == '' ); ?>></option>
+						<option value="1" <?php selected( $guest_profile['sponsor_type'] == '1' ); ?>>Guest</option>
+						<option value="2" <?php selected( $guest_profile['sponsor_type'] == '2' ); ?>>Affiliation</option>
+					</select>
+					
+					<label for="sponsor">Sponsor</label>
+					<input type="text" id="sponsor" name="field_<?php echo $profile['sponsor']['id']; ?>" class="form-text" value="<?php echo $guest_profile['sponsor'] == 'No information available.' ? '' : $guest_profile['sponsor'] ?>" />
+				</fieldset>
+				
+				<fieldset>
+					<label for="status">Status</label>
+					<select id="status" name="field_<?php echo $profile['status']['id']; ?>" class="form-text">
+						<option value="" <?php selected( $guest_profile['status'] == '' ); ?>></option>
+						<option value="0" <?php selected( $guest_profile['status'] == '0' ); ?>>Unclaimed</option>
+						<option value="1" <?php selected( $guest_profile['status'] == '1' ); ?>>Claimed</option>
+					</select>
+				</fieldset>
+			
+				<fieldset class="form-actions">
+					<button type="submit" name="form_action" value="update">Update Guest Profile</button>
+					<button type="submit" name="form_action" value="checkin">Update Profile & Checkin Guest</button>
+					<button type="submit" name="form_action" value="cancel">Cancel</button>
+				</fieldset>
+			</form>
+			
+			<?php else: ?>
+			
+				<p>Something is wrong with the url.</p>'
+			
+			<?php endif; ?>
 		
-		<form action="<?php echo add_query_arg( array( 'action' => 'update' , 'guest_id' => $_GET['guest_id'] ), get_permalink() ); ?>" method="post">
-			<fieldset>
-				<legend>Guest Name</legend>
-				<fieldset>
-					<label for="first_name">First Name</label>
-					<input type="text" id="first_name" name="field_<?php echo $profile['guest_name']['id']; ?>[first]" class="form-text" value="<?php echo $guest_profile['name']['first'] ?>" />
-				</fieldset>
-				
-				<fieldset>
-					<label for="last_name">Last Name</label>
-					<input type="text" id="last_name" name="field_<?php echo $profile['guest_name']['id']; ?>[last]" class="form-text" value="<?php echo $guest_profile['name']['last'] ?>" />
-				</fieldset>
-			</fieldset>
-			
-			<fieldset>	
-				<legend>Date of Birth</legend>
-				
-				<fieldset>
-					<label for="month">Month</label>
-					<select id="month" name="field_<?php echo $profile['dob']['id']; ?>[month]" class="form-text">
-						<option value="" <?php selected( $guest_profile['dob']['month'] == '' ); ?>></option>
-						<?php
-							$months = range( 1 , 12 );
-							
-							foreach ( $months as $month ) {
-								echo '<option value="' . $month . '"' . selected( $guest_profile['dob']['month'] == $month ) . '>(' . str_pad( $month , 2 , '0' , STR_PAD_LEFT ) . ') ' . date( 'F' , mktime( 0 , 0 , 0 , $month ) ) . '</option>';
-							}
-						?>
-					</select>
-				</fieldset>
-				
-				<fieldset>
-					<label for="day">Day</label>
-					<select id="day" name="field_<?php echo $profile['dob']['id']; ?>[day]" class="form-text">
-						<option value="" <?php selected( $guest_profile['dob']['day'] == '' ); ?>></option>
-						<?php
-							$days = range( 1 , 31 );
-							
-							foreach ( $days as $day ) {
-								echo '<option value="' . $day . '"' . selected( $guest_profile['dob']['day'] == $day ) . '>' . $day . '</option>';
-							}
-						?>
-					</select>
-				</fieldset>
-				
-				<fieldset>
-					<label for="year">Year</label>
-					<select id="year" name="field_<?php echo $profile['dob']['id']; ?>[year]" class="form-text">
-						<option value="" <?php selected( $guest_profile['dob']['year'] == '' ); ?>></option>
-						<?php
-							$years = range( 2014-18 , 2014-90 );
-							
-							foreach ( $years as $year ) {
-								echo '<option value="' . $year . '"' . selected( $guest_profile['dob']['year'] == $year ) . '>' . $year . '</option>';
-							}
-						?>
-					</select>
-				</fieldset>
-			</fieldset>
-			
-			<fieldset>	
-				<label for="gender">Gender</label>
-				<select id="gender" name="field_<?php echo $profile['gender']['id']; ?>" class="form-text">
-					<option value="" <?php selected( $guest_profile['gender'] == '' ); ?>></option>
-					<option value="1" <?php selected( $guest_profile['gender'] == '1' ); ?>>Male</option>
-					<option value="2" <?php selected( $guest_profile['gender'] == '2' ); ?>>Female</option>
-					<option value="3" <?php selected( $guest_profile['gender'] == '3' ); ?>>Transgender</option>
-				</select>
-			</fieldset>
-			
-			<fieldset>	
-				<label for="guest_type">Guest Type</label>
-				<select id="guest_type" name="field_<?php echo $profile['guest_type']['id']; ?>" class="form-text">
-					<option value="" <?php selected( $guest_profile['guest_type'] == '' ); ?>></option>
-					<option value="1" <?php selected( $guest_profile['guest_type'] == '1' ); ?>>Pre-Registered</option>
-					<option value="2" <?php selected( $guest_profile['guest_type'] == '2' ); ?>>Walk-In</option>
-					<option value="3" <?php selected( $guest_profile['guest_type'] == '3' ); ?>>Young Professional</option>
-					<option value="4" <?php selected( $guest_profile['guest_type'] == '4' ); ?>>Complimentary</option>
-				</select>
-			</fieldset>
-			
-			<fieldset>
-				<label for="email">Email</label>
-				<input type="email" id="email" name="field_<?php echo $profile['email']['id']; ?>" class="form-text" value="<?php echo $guest_profile['email'] == 'No information available.' ? '' : $guest_profile['email'] ?>" />
-			</fieldset>
-			
-			<fieldset>
-				<legend>Sponsorship</legend>
-				
-				<label for="sponsor_type">Sponsor Type</label>
-				<select id="sponsor_type" name="field_<?php echo $profile['sponsor_type']['id']; ?>" class="form-text">
-					<option value="" <?php selected( $guest_profile['sponsor_type'] == '' ); ?>></option>
-					<option value="1" <?php selected( $guest_profile['sponsor_type'] == '1' ); ?>>Guest</option>
-					<option value="2" <?php selected( $guest_profile['sponsor_type'] == '2' ); ?>>Affiliation</option>
-				</select>
-				
-				<label for="sponsor">Sponsor</label>
-				<input type="text" id="sponsor" name="field_<?php echo $profile['sponsor']['id']; ?>" class="form-text" value="<?php echo $guest_profile['sponsor'] == 'No information available.' ? '' : $guest_profile['sponsor'] ?>" />
-			</fieldset>
-			
-			<fieldset>
-				<label for="status">Status</label>
-				<select id="status" name="field_<?php echo $profile['status']['id']; ?>" class="form-text">
-					<option value="" <?php selected( $guest_profile['status'] == '' ); ?>></option>
-					<option value="0" <?php selected( $guest_profile['status'] == '0' ); ?>>Unclaimed</option>
-					<option value="1" <?php selected( $guest_profile['status'] == '1' ); ?>>Claimed</option>
-				</select>
-			</fieldset>
-		
-			<fieldset class="form-actions">
-				<button type="submit" name="form_action" value="update">Update Guest Profile</button>
-				<button type="submit" name="form_action" value="checkin">Update Profile & Checkin Guest</button>
-				<button type="submit" name="form_action" value="cancel">Cancel</button>
-			</fieldset>
-		</form>
+		<?php endif; ?>
 		
 	<?php elseif ( $_GET['action'] == 'update' ): ?>
 	
@@ -269,19 +282,23 @@
 			//var_dump( $guest_profile );
 		?>
 		
-		<h1>Updated Guest Profile</h1>
+		<h1>Update Guest Profile</h1>
 		
 		<?php if ( $_POST['form_action'] == 'update' ):  ?>
 		
 			<p>Update and process profile</p>
 			
-			<?php $updated_profile = $regs->update_registration( $_GET['guest_id'] , stripslashes_deep( $_POST ) ); ?>
+			<?php if ( isset( $_GET['registration_id'] ) || array_key_exists( 'registration_id' , $_GET ) ): ?>
 			
-			<?php var_dump( $updated_profile ); ?>
-			
-			<?php if ( property_exists( $updated_profile , 'success' ) ): ?>
-			
-				<p>The guest profile has been successfully updated.</p>
+				<?php $update_response = $regs->update_registration( $_GET['registration_id'] , stripslashes_deep( $_POST ) ); ?>
+				
+				<?php //var_dump( $update_response ); ?>
+				
+				<?php if ( property_exists( $update_response , 'success' ) ): ?>
+				
+					<p>The guest profile has been successfully updated.</p>
+				
+				<?php endif; ?>
 			
 			<?php endif; ?>
 		
@@ -299,9 +316,11 @@
 	
 		<h1>Guest Check-in</h1>
 		
-		<?php $response = $regs->checkin_guest( $_GET['guest_id'] ); ?>
+		<?php $checkin_response = $regs->checkin_guest( $_GET['registration_id'] ); ?>
 		
-		<?php if ( property_exists( $response , 'success' ) ): ?>
+		<?php //var_dump($checkin_response); ?>
+		
+		<?php if ( property_exists( $checkin_response , 'success' ) ): ?>
 			
 			<p>This guest has been successfully checked-in as an attendee at ArtCares 2014.</p>
 			<p>Their bidder number is:</p>
@@ -319,17 +338,17 @@
 	<ul>
 		<?php if ( $_GET['action'] == 'view' ): ?>
 		
-			<li><a href="<?php echo add_query_arg( array( 'action' => 'edit' , 'guest_id' => $_GET['guest_id'] ) , get_permalink() ); ?>">Edit Guest</a></li>
+			<li><a href="<?php echo add_query_arg( array( 'action' => 'edit' , 'registration_id' => $_GET['registration_id'] ) , get_permalink() ); ?>">Edit Guest</a></li>
 		
 		<?php elseif ( $_GET['action'] == 'edit' || $_GET['action'] == 'update' ): ?>
 		
-			<li><a href="<?php echo add_query_arg( array( 'action' => 'view' , 'guest_id' => $_GET['guest_id'] ) , get_permalink() ); ?>">View Guest</a></li>
+			<li><a href="<?php echo add_query_arg( array( 'action' => 'view' , 'registration_id' => $_GET['registration_id'] ) , get_permalink() ); ?>">View Guest</a></li>
 
 		<?php endif; ?>
 		
 		<?php if ( $_GET['action'] != 'checkin' ): ?>
 			
-			<li><a href="<?php echo add_query_arg( array( 'action' => 'checkin' , 'guest_id' => $_GET['guest_id'] ) , get_permalink() ); ?>">Check-in Guest</a></li>
+			<li><a href="<?php echo add_query_arg( array( 'action' => 'checkin' , 'registration_id' => $_GET['registration_id'] ) , get_permalink() ); ?>">Check-in Guest</a></li>
 		<?php endif; ?>
 		
 	</ul>

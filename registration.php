@@ -86,7 +86,7 @@ $regs = new ATGC_Registration();
 						
 						<?php if ( empty( $guests ) ): ?>
 						
-							<p>No guest was found matching the desired information.</p>
+							<p>No guests were found matching the desired information.</p>
 						
 						<?php else: ?>
 						
@@ -96,7 +96,7 @@ $regs = new ATGC_Registration();
 								
 									<?php // need to develop a way to alphabetize this list ?>
 								
-									<li><a href="<?php echo add_query_arg( array( 'action' => 'view' , 'guest_id' => $guest->id ) , get_permalink( get_page_by_path( 'artcares/twentyfourteen/registration/guest' ) ) ); ?>"><?php echo $guest->data->{'24795094'}->value->first . " " . $guest->data->{'24795094'}->value->last ?></a></li>
+									<li><a href="<?php echo add_query_arg( array( 'action' => 'view' , 'registration_id' => $guest->id ) , get_permalink( get_page_by_path( 'artcares/twentyfourteen/registration/guest' ) ) ); ?>"><?php echo $guest->data->{'24795094'}->value->first . " " . $guest->data->{'24795094'}->value->last ?></a></li>
 								
 								<?php endforeach; ?>
 							
@@ -139,7 +139,7 @@ $regs = new ATGC_Registration();
 						
 						<?php //var_dump( $_POST ); ?>
 						
-						<?php $sponsors = $regs->search_sponsors( $_POST ); ?>
+						<?php $sponsors = $regs->get_sponsors( $_POST ); ?>
 						
 						<?php //var_dump( $sponsors ); ?>
 						
@@ -150,8 +150,16 @@ $regs = new ATGC_Registration();
 								<?php foreach ( $sponsors as $sponsor_id => $sponsor ): ?>
 								
 									<?php // need to develop a way to alphabetize this list ?>
+									
+									<?php if ( $_POST['search_by'] == 'guest' ): ?>
 								
-									<li><a href="<?php echo add_query_arg( array( 'action' => 'view' , 'guest_id' => $sponsor['id'] , 'sponsor_id' => $sponsor_id ) , get_permalink( get_page_by_path( 'artcares/twentyfourteen/registration/sponsor' ) ) ); ?>"><?php echo $sponsor['first_name'] . " " . $sponsor['last_name'] . ' (' . $sponsor['guests'] . ')' ?></a></li>
+										<li><a href="<?php echo add_query_arg( array( 'action' => 'view' , 'guest_id' => $sponsor['id'] , 'sponsor_type' => 1 , 'sponsor_id' => $sponsor_id ) , get_permalink( get_page_by_path( 'artcares/twentyfourteen/registration/sponsor' ) ) ); ?>"><?php echo $sponsor['first_name'] . " " . $sponsor['last_name'] . ' (' . $sponsor['guests'] . ')' ?></a></li>
+									
+									<?php elseif ( $_POST['search_by'] == 'affiliation' ): ?>
+									
+										<li><a href="<?php echo add_query_arg( array( 'action' => 'view' , 'guest_id' => $sponsor['id'] , 'sponsor_type' => 2 , 'sponsor_id' => $sponsor_id ) , get_permalink( get_page_by_path( 'artcares/twentyfourteen/registration/sponsor' ) ) ); ?>"><?php echo $sponsor['affiliate_name'] . ' (' . $sponsor['guests'] . ')' ?></a></li>
+									
+									<?php endif; ?>
 								
 								<?php endforeach; ?>
 							
@@ -159,7 +167,7 @@ $regs = new ATGC_Registration();
 						
 						<?php else: ?>
 						
-							<p>No sponsors with any available tickets could be found based on the information you entered.</p>
+							<p>The selected sponsor has no available tickets or pre-registrations.</p>
 							
 						<?php endif; ?>
 					
@@ -186,7 +194,7 @@ $regs = new ATGC_Registration();
 							</fieldset>
 						</form>
 						
-						<form action="<?php echo add_query_arg( array( 'action' => 'search' , 'type' => 'sponsor' ), get_permalink() ); ?>" method="post">
+						<form action="<?php echo add_query_arg( array( 'action' => 'view' , 'type' => 'sponsor' , 'sponsor_type' => 2 ), get_permalink( get_page_by_path( 'artcares/twentyfourteen/registration/sponsor' ) ) ); ?>" method="post">
 							<fieldset>
 								<label for="affiliation">Affiliation</label>
 								<?php $affiliates = $regs->get_affiliates(); ?>
@@ -198,6 +206,7 @@ $regs = new ATGC_Registration();
 									<?php foreach ( $affiliates as $affiliate ): ?>
 									
 										<option value="<?php echo $affiliate->data->{'24898126'}->value; ?>"><?php echo $affiliate->data->{'24898013'}->value; ?></option>
+										
 									<?php endforeach; ?>
 								</select>
 							</fieldset>
@@ -314,14 +323,24 @@ $regs = new ATGC_Registration();
 						<legend>Sponsorship</legend>
 						
 						<label for="sponsor_type">Sponsor Type</label>
-						<select id="sponsor_type" name="field_<?php echo $regs->get_form_field_id( 'sponsor_type' ); ?>" class="form-text">
-							<option value=""></option>
-							<option value="1">Guest</option>
-							<option value="2">Affiliation</option>
+						
+						<?php $sponsor_type = ( isset( $_GET['sponsor_type'] ) || array_key_exists( 'sponsor_type' , $_GET ) ) ? $_GET['sponsor_type'] : ''; ?>
+						
+						<input type="hidden" name="field_<?php echo $regs->get_form_field_id( 'sponsor_type' ); ?>" value="<?php echo $sponsor_type ?>" /> 
+
+						<select id="sponsor_type" name="field_<?php echo $regs->get_form_field_id( 'sponsor_type' ); ?>" class="form-text" <?php if ( $sponsor_type ) { echo 'disabled'; } ?>>
+							<option value="" <?php selected( $sponsor_type , '' ); ?>></option>
+							<option value="1" <?php selected( $sponsor_type , 1 ); ?>>Guest</option>
+							<option value="2" <?php selected( $sponsor_type , 2 ); ?>>Affiliation</option>
 						</select>
 						
 						<label for="sponsor">Sponsor</label>
-						<input type="text" id="sponsor" name="field_<?php echo $regs->get_form_field_id( 'sponsor' ); ?>" class="form-text" value="" />
+						
+						<?php $sponsor_id = ( isset( $_GET['sponsor_id'] ) || array_key_exists( 'sponsor_id' , $_GET ) ) ? $_GET['sponsor_id'] : ''; ?>
+						
+						<input type="hidden" name="field_<?php echo $regs->get_form_field_id( 'sponsor' ); ?>" value="<?php echo $sponsor_id; ?>" />
+						
+						<input type="text" id="sponsor" name="field_<?php echo $regs->get_form_field_id( 'sponsor' ); ?>" class="form-text" value="<?php echo $sponsor_id; ?>" <?php if ( $sponsor_id ) { echo 'disabled'; } ?> />
 					</fieldset>
 					
 					<fieldset>
@@ -344,24 +363,36 @@ $regs = new ATGC_Registration();
 			
 				<?php //var_dump( $_POST ); ?>
 				
-				<?php $register_response = $regs->register_guest( $_POST ); ?>
+				<?php if ( isset( $_POST['form_action'] ) || array_key_exists( 'form_action' , $_POST ) ): ?>
 				
-				<?php if ( array_key_exists( 'status' , $register_response ) ): ?>
-				
-					<?php if ( $register_response['status'] ): ?>
+					<?php if ( $_POST['form_action'] == 'register' || $_POST['form_action'] == 'checkin' ): ?>
 					
-						<p><?php echo $register_response['message']; ?></p>
-					
-					<?php endif; ?>
-					
-					<?php if ( $register_response['action'] == 'checkin' ): ?>
-					
-						<p>The guest's bidder number is:</p>
+						<?php $register_response = $regs->register_guest( stripslashes_deep( $_POST ) ); ?>
 						
-						<p><?php echo $register_response['guest_id']; ?></p>
-					
-					<?php endif; ?>
+						<?php if ( array_key_exists( 'status' , $register_response ) ): ?>
+						
+							<?php if ( $register_response['status'] ): ?>
+							
+								<p><?php echo $register_response['message']; ?></p>
+							
+							<?php endif; ?>
+							
+							<?php if ( $register_response['action'] == 'checkin' ): ?>
+							
+								<p>The guest's bidder number is:</p>
+								
+								<p><?php echo $register_response['guest_id']; ?></p>
+							
+							<?php endif; ?>
+						
+						<?php endif; ?>
 				
+					<?php elseif ( $_POST['form_action'] == 'cancel' ): ?>
+				
+						<p>New guest registration was canceled. No data was saved.</p>
+				
+					<?php endif; ?>
+			
 				<?php endif; ?>
 			
 			<?php endif; ?>
